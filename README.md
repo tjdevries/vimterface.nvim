@@ -1,25 +1,18 @@
 # vinterface.nvim
 
-Some ideas about making plugins in neovim
+Some ideas about making plugins in neovim.
 
-```lua
--- file: `config/test_plug.lua`
---
--- This returns a table that represents the configuration for the plugin.
--- To see the plugin, see `scratch/test_plug.lua`
+Closer to "declarative" style but without introducing another language (`.json`, `.toml`, etc.)
+and allows for things like passing Lua functions, upvalues, required values, etc.
 
-return {
-  enabled = true,
-
-  map = {
-  n = {
-    ["<space>kj"] = "TestPlugMappingOne",
-    },
-  },
-}
-```
+Goals:
+- Easy to copy & paste in config to get defaults to configure
+- Declars settings, mappings, etc. from plugin and user.
+  - could be used to make GUI, validator, completion engine, etc.
 
 ## Thoughts
+
+### Thoughts: Users
 
 `config/*.lua` gets sourced at startup, after loading.
 
@@ -48,6 +41,7 @@ return {
     },
   },
 }
+```
 
 One special file in `config/*.lua`: `init.lua`.
 
@@ -62,5 +56,48 @@ return {
   },
 
   ...
+}
+```
+
+### Thoughts: Plugin
+
+```lua
+-- Plugins could do something like this:
+
+local plugin = vim.plugin.register {
+  name = "test_plug",
+
+  -- Just some random values from nvim-compe
+  settings = {
+    debug = {
+      type = "boolean",
+      desc = "Debug mode.",
+      default = false,
+    },
+
+    source = {
+      type = "table",
+      desc = "Sources configuration.",
+      default = {
+        path = true,
+        buffer = true,
+      },
+      validator = function(t)
+        error "validating"
+      end,
+    },
+  },
+}
+
+local count = 0
+
+plugin:map {
+  name = "TestPlugMappingOne",
+  fn = function()
+    count = count + 1
+    print("Yoo, dawg, we did it: " .. count)
+  end,
+  -- condition = ...
+  -- default = ...
 }
 ```
