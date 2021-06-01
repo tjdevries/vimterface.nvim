@@ -9,13 +9,17 @@ function Plugin:new(mod)
   return setmetatable({
     _name = assert(mod.name, "Must have name"),
     _maps = {},
+    _settings = mod.settings,
   }, self)
 end
 
 function Plugin:map(t)
-  self._maps[t.name] = t
+  vim.validate {
+    name = { t.name, "s" },
+    fn = { t.fn, "f" },
+  }
 
-  return self
+  self._maps[t.name] = t
 end
 
 vim.plugin = {}
@@ -30,9 +34,6 @@ vim.plugin.register = function(mod)
 
   registry[mod.name] = Plugin:new(mod)
   return registry[mod.name]
-end
-
-vim.plugin.setup = function(config)
 end
 
 local load_config = function(file)
@@ -54,7 +55,7 @@ local load_config = function(file)
 
   -- TODO: Validate mappings
   -- TODO: <expr>
-  for mode, mode_mappings in pairs(config.map or {}) do
+  for mode, mode_mappings in pairs(config.maps or {}) do
     mode = string.lower(mode)
 
     for key, mapping in pairs(mode_mappings) do
