@@ -28,22 +28,34 @@ local plugin = vim.plugin.register {
 
 local count = 0
 
-if plugin.settings.debug then
-  print "debug"
-end
-
 plugin:map {
-  name = "TestPlugMappingOne",
+  name = "EchoHello",
   fn = function()
     count = count + 1
-    print("Yoo, dawg, we did it: " .. count)
+    return vim.api.nvim_replace_termcodes(string.format(":echo 'Hello %d'<CR>", count), true, true, true)
   end,
-  -- condition = ...
-  default = {
-    "n",
-    "gd", --[[opts]]
-  },
+  opts = { expr = true, silent = true, noremap = true },
+  default = { "n", "kj" },
 }
+
+plugin:map {
+  name = "UsesCommand",
+  cmd = "<cmd>echo 'Hi From Vim Commands'<CR>",
+}
+
+-- condition = ...
+
+-- default_mapping
+--  { "mode", "keymap", "opts" }
+plugin:map_group("lsp", {
+  declaration = { "<cmd>lua vim.lsp.buf.declaration()<CR>", default = { "n", "gD" } },
+  definition = { "<cmd>lua vim.lsp.buf.definition()<CR>", default = "gd" },
+  -- ...
+})
+
+--[[
+autocmd *.py :lua require('myplugin').plugin:apply_group("python_mappings", 0)
+--]]
 
 -- TODO:
 -- plugin:command { ... }

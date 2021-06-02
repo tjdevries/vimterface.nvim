@@ -3,10 +3,10 @@ local a = vim.api
 local map = {}
 map._store = {}
 
-local _mapping_key_id = 0
+_VimterfaceID = _VimterfaceID or 0
 local get_next_id = function()
-  _mapping_key_id = _mapping_key_id + 1
-  return _mapping_key_id
+  _VimterfaceID = _VimterfaceID + 1
+  return _VimterfaceID
 end
 
 local assign_function = function(func)
@@ -19,7 +19,6 @@ end
 
 -- TODO: buffer
 map.apply = function(mode, key_bind, key_func, opts)
-  print("APPLYING", mode, key_bind, key_func)
   if not key_func then
     return
   end
@@ -64,7 +63,26 @@ map.execute = function(keymap_identifier)
     string.format("Unsure of how we got this failure: %s", keymap_identifier)
   )
 
-  key_func()
+  return key_func()
 end
+
+local KeyMap = {}
+KeyMap.__index = KeyMap
+
+function KeyMap:new(obj)
+  P(obj)
+  if not obj.fn and not obj.cmd then
+    error "Must have fn or cmd"
+  end
+
+  return setmetatable(obj, self)
+end
+
+function KeyMap:apply(mode, key)
+  print(mode, key, "=>", self.fn or self.cmd, self.opts)
+  map.apply(mode, key, self.fn or self.cmd, self.opts)
+end
+
+map.KeyMap = KeyMap
 
 return map

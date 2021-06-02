@@ -1,26 +1,7 @@
 local map = R "vimterface.map"
+local Plugin = R "vimterface.plugin"
 
 local _user_directory = "config/*.lua"
-
-local Plugin = {}
-Plugin.__index = Plugin
-
-function Plugin:new(mod)
-  return setmetatable({
-    _name = assert(mod.name, "Must have name"),
-    _maps = {},
-    _settings = mod.settings,
-  }, self)
-end
-
-function Plugin:map(t)
-  vim.validate {
-    name = { t.name, "s" },
-    fn = { t.fn, "f" },
-  }
-
-  self._maps[t.name] = t
-end
 
 vim.plugin = {}
 
@@ -59,16 +40,17 @@ local load_config = function(file)
     mode = string.lower(mode)
 
     for key, mapping in pairs(mode_mappings) do
-      print(mode, key, mapping)
-
-      map.apply(mode, key, plug._maps[mapping].fn)
+      if mode ~= "group" then
+        print("trying", mode, mode_mappings, key, mapping)
+        plug:get_map(mapping):apply(mode, key)
+      end
     end
   end
 
   print("loaded: ", file, "=>", mod_name, plug)
 end
 
-vim.plugin.find_all_configs = function(glob)
+vim.plugin.load_all_configs = function(glob)
   glob = glob or _user_directory
   local config_files = vim.api.nvim_get_runtime_file(glob, false)
 
@@ -78,6 +60,6 @@ vim.plugin.find_all_configs = function(glob)
 end
 
 vim.cmd [[luafile ./scratch/test_plug.lua]]
-vim.plugin.find_all_configs()
+vim.plugin.load_all_configs()
 
 return vim.plugin
