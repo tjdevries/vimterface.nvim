@@ -1,6 +1,9 @@
 local plugin = vim.plugin.register {
   name = "test_plug",
 
+  setup = function(...)
+  end,
+
   -- Just some random values from nvim-compe
   settings = {
     debug = {
@@ -25,6 +28,10 @@ local plugin = vim.plugin.register {
 
 local count = 0
 
+if plugin.settings.debug then
+  print "debug"
+end
+
 plugin:map {
   name = "TestPlugMappingOne",
   fn = function()
@@ -32,5 +39,18 @@ plugin:map {
     print("Yoo, dawg, we did it: " .. count)
   end,
   -- condition = ...
-  -- default = ...
+  default = {
+    "n",
+    "gd", --[[opts]]
+  },
 }
+
+-- TODO:
+-- plugin:command { ... }
+-- OR
+-- does it go in register?
+
+-- TODO:
+-- plugin:autocmd { ... }
+-- OR
+-- doees it go in register?

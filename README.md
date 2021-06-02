@@ -1,4 +1,4 @@
-# vinterface.nvim
+# vimterface.nvim
 
 Some ideas about making plugins in neovim.
 

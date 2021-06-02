@@ -39,7 +39,7 @@ map.apply = function(mode, key_bind, key_func, opts)
 
     local map_string
     if opts.expr then
-      map_string = string.format([[luaeval("require('vinterface.map').execute(%s)")]], key_id)
+      map_string = string.format([[luaeval("require('vimterface.map').execute(%s)")]], key_id)
     else
       local prefix
 
@@ -51,7 +51,7 @@ map.apply = function(mode, key_bind, key_func, opts)
         prefix = ":"
       end
 
-      map_string = string.format([[%slua require('vinterface.map').execute(%s)<CR>]], prefix, key_id)
+      map_string = string.format([[%slua require('vimterface.map').execute(%s)<CR>]], prefix, key_id)
     end
 
     a.nvim_set_keymap(mode, key_bind, map_string, opts)

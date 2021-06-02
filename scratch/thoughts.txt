@@ -1,0 +1,22 @@
+local plugin = vim.plugin.register { ... }
+
+plugin:to_schema() -> nvim_plugin_schema.json
+
+
+"config/init.json" or "config/init.lua"
+{
+    nvim_lsp = {...}
+}
+
+"config/plugin.json"
+
+glob(config/*.json), glob(config/*.lua)
+    error if you have both for the same name
+
+if you have json
+    json_decode(file) -> exactly what you'd do with lua
+
+lua:
+    standard of truth
+
+only stay w/ stdpath('config')

@@ -1,4 +1,4 @@
-local map = R "vinterface.map"
+local map = R "vimterface.map"
 
 local _user_directory = "config/*.lua"
 
