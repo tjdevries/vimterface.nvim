@@ -70,9 +70,10 @@ local KeyMap = {}
 KeyMap.__index = KeyMap
 
 function KeyMap:new(obj)
-  P(obj)
+  assert(self and obj, "Must pass `obj` to KeyMap:new(obj)")
+
   if not obj.fn and not obj.cmd then
-    error "Must have fn or cmd"
+    error("Must have fn or cmd:" .. vim.inspect(obj))
   end
 
   return setmetatable(obj, self)
@@ -81,6 +82,11 @@ end
 function KeyMap:apply(mode, key)
   print(mode, key, "=>", self.fn or self.cmd, self.opts)
   map.apply(mode, key, self.fn or self.cmd, self.opts)
+end
+
+-- TODO: Should allow a way to drop the keymap and release any references.
+function KeyMap:del(id)
+  map._store[id] = nil
 end
 
 map.KeyMap = KeyMap

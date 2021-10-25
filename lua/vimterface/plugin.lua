@@ -6,9 +6,11 @@ Plugin.__index = Plugin
 function Plugin:new(mod)
   return setmetatable({
     _name = assert(mod.name, "Must have name"),
-    _maps = {},
     _groups = {},
     _settings = mod.settings,
+
+    -- `maps` is a public API
+    maps = {},
   }, self)
 end
 
@@ -19,11 +21,7 @@ function Plugin:map(t)
     cmd = { t.cmd, "s", true },
   }
 
-  self._maps[t.name] = KeyMap:new(t)
-end
-
-function Plugin:get_map(name)
-  return self._maps[name]
+  self.maps[t.name] = KeyMap:new(t)
 end
 
 function Plugin:map_group(name, t)

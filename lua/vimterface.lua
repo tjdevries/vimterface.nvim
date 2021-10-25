@@ -18,6 +18,8 @@ vim.plugin.register = function(mod)
 end
 
 local load_config = function(file)
+  print("Loading", file)
+
   local ok, config = pcall(loadfile(file))
   if not ok then
     -- TODO: We will handle this gracefully.
@@ -42,7 +44,7 @@ local load_config = function(file)
     for key, mapping in pairs(mode_mappings) do
       if mode ~= "group" then
         print("trying", mode, mode_mappings, key, mapping)
-        plug:get_map(mapping):apply(mode, key)
+        plug.maps[mapping]:apply(mode, key)
       end
     end
   end
